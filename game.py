@@ -4,6 +4,8 @@ import sys
 def start():
     global iMobs
     global Mobs
+    global Mdir
+    Mdir = 1
     x=2
     y=2
     for i in range(19):
@@ -106,6 +108,19 @@ def update():
     global le
     global step
     global shoots
+    global Mdir
+    if step%50 == 0:
+        if (Mobs[len(Mobs)-1][1][0]>755 and Mdir == 1) or (Mobs[0][1][0]<10 and Mdir == -1):
+            for j in range(-1,len(Mobs)-1):
+                Mobs[j][1][1]+=5
+                canvas.coords(Mobs[j][0],Mobs[j][1][0],Mobs[j][1][1])
+            Mdir*=-1
+        else:
+            for j in range(-1,len(Mobs)-1):
+                if j==-1:
+                    j=len(Mobs)-1
+                Mobs[j][1][0]+=5*Mdir
+                canvas.coords(Mobs[j][0],Mobs[j][1][0],Mobs[j][1][1])
     if step%10 == 0 :
         shoot(Ppos)
     i = 0
