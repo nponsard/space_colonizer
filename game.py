@@ -6,7 +6,7 @@ def start():
     global Mobs
     x=2
     y=2
-    for i in range(20):
+    for i in range(19):
         mob = canvas.create_image(x,y,image= iMobs[0][0] ,  anchor="nw")
         Mobs.append([mob,[x,y]])
         x+=40
@@ -112,14 +112,13 @@ def update():
     for s in shoots:
         shoots[i][1]-=10
         canvas.coords(shoots[i][2],shoots[i][0],shoots[i][1])
-        for j in range(1,len(Mobs)):
-            print(len(Mobs))
+        for j in range(0,len(Mobs)-1):
             if len(Mobs)==1 :
                 print(Mobs)
 
-            if shoots[i][0] <= Mobs[j-1][1][0]+40 and shoots[i][0]+10 >= Mobs[j-1][1][0] and shoots[i][1] >= Mobs[j-1][1][1] and shoots[i][1] <= Mobs[j-1][1][1]+40:
-                canvas.delete(Mobs[j-1][0])
-                del Mobs[j-1]
+            if shoots[i][0] <= Mobs[j][1][0]+40 and shoots[i][0]+10 >= Mobs[j][1][0] and shoots[i][1] >= Mobs[j][1][1] and shoots[i][1] <= Mobs[j][1][1]+40:
+                canvas.delete(Mobs[j][0])
+                del Mobs[j]
                 delShoot(i)
         if shoots[i][1]<0:
             delShoot(i)
