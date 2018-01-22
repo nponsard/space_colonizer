@@ -6,6 +6,8 @@ def start():
     global iMobs
     global Mobs
     global Mdir
+    global phase
+    phase = 0
     Mdir = 1
     x=2
     y=2
@@ -114,8 +116,10 @@ def update():
     global step
     global shoots
     global Mdir
+    global phase
     if step%50 == 0:
-        if (Mobs[len(Mobs)-1][1][0]>755 and Mdir == 1) or (Mobs[0][1][0]<10 and Mdir == -1):
+        phase+=1
+        if phase%10 == 0:
             for j in range(-1,len(Mobs)-1):
                 Mobs[j][1][1]+=5
                 canvas.coords(Mobs[j][0],Mobs[j][1][0],Mobs[j][1][1])
