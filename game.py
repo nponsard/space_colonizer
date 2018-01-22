@@ -12,8 +12,11 @@ def start():
     x=2
     y=2
     for i in range(19):
-        mob = canvas.create_image(x,y,image= iMobs[0][0] ,  anchor="nw")
-        Mobs.append([mob,[x,y]])
+        for j in range(3):
+            mob = canvas.create_image(x,y,image= iMobs[0][0] ,  anchor="nw")
+            Mobs.append([mob,[x,y]])
+            y+=40
+        y=2
         x+=40
     update()
     window.mainloop()
