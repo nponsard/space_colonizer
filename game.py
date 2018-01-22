@@ -119,7 +119,7 @@ def update():
     global phase
     if step%50 == 0:
         phase+=1
-        if phase%10 == 0:
+        if phase%9 == 0:
             for j in range(-1,len(Mobs)-1):
                 Mobs[j][1][1]+=5
                 canvas.coords(Mobs[j][0],Mobs[j][1][0],Mobs[j][1][1])
