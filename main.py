@@ -1,6 +1,6 @@
 from tkinter import *
 from game import *
-
+import os
 
 
 
@@ -9,9 +9,9 @@ from game import *
 
 init(800,600,"space colonizer")
 
-image = PhotoImage(file = "imgs\\p.png")
+image = PhotoImage(file = os.path.join("imgs","p.png"))
 create_player(400,500,image)
-i = PhotoImage(file = "imgs\\e.png")
+i = PhotoImage(file = os.path.join("imgs","e.png"))
 create_Mob(i)
 
 

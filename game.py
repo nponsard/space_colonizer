@@ -1,5 +1,6 @@
 from tkinter import *
 import sys
+import os
 
 def start():
     global iMobs
@@ -35,9 +36,9 @@ def init(width , height , title):
     window.title(title)
     canvas= Canvas(window,width=width,height=height,bg="black")
     canvas.grid(column=0,row=0)
-    shootImage = PhotoImage(file = "imgs\\s.png")
-    window.bind_all("<Left>", left)
-    window.bind_all("<Right>", right)
+    shootImage = PhotoImage(file = os.path.join("imgs","s.png"))
+    window.bind_all("<KeyPress>", keypressed)
+    window.bind_all("<KeyRelease>", keyreleased)
 
 def create_Mob(image, spawnRate = 1):
     iMobs.append([image, spawnRate])
@@ -72,19 +73,23 @@ def Pmove(x,y):
         canvas.coords(player,Ppos[0],Ppos[1])
 
 
+def keypressed(arg):
+	global r
+	global l
+	
+	if arg.keysym == 'Left':
+		l = 1
+	elif arg.keysym == 'Right':
+		r = 1
 
-
-def right(arg):
-    global r
-    r = 1
-#    global Ppos
-#    Pmove(Ppos[0]+10,Ppos[1])
-def left(arg):
-    global l
-    l = 1
-#    global Ppos
-#    Pmove(Ppos[0]-10,Ppos[1])
-
+def keyreleased(arg):
+	global r
+	global l
+	
+	if arg.keysym == 'Left':
+		l = 0
+	elif arg.keysym == 'Right':
+		r = 0
 
 def shoot(Ppos):
     x=Ppos[0]+15
@@ -143,7 +148,6 @@ def update():
     if r ==1 :
         if ri < 10:
             ri += 2
-        r = 0
     else:
         if ri > 0 and step%5 == 0:
             ri -=2
@@ -151,7 +155,6 @@ def update():
     if l==1:
         if le < 10:
             le += 2
-        l=0
     else :
         if le > 0 and step%5 == 0:
             le -=2
