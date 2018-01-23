@@ -1,6 +1,8 @@
 from tkinter import *
 import sys
 import os
+from random import *
+from math import *
 
 def start():
     global iMobs
@@ -81,7 +83,7 @@ def Pmove(x,y):
 def keypressed(arg):
 	global r
 	global l
-	
+
 	if arg.keysym == 'Left':
 		l = 1
 	elif arg.keysym == 'Right':
@@ -90,18 +92,16 @@ def keypressed(arg):
 def keyreleased(arg):
 	global r
 	global l
-	
+
 	if arg.keysym == 'Left':
 		l = 0
 	elif arg.keysym == 'Right':
 		r = 0
 
-def shoot(Ppos):
-    x=Ppos[0]+15
-    y=Ppos[1]-10
-    s = canvas.create_image(x,y,image=shootImage, anchor = "nw")
+def shoot(pos ,vector = [-10,0]):
+    s = canvas.create_image(pos[0],pos[1],image=shootImage, anchor = "nw")
     global shoots
-    shoots.append([x,y,s])
+    shoots.append([[pos[0],pos[1]],[0,-10],s])
 def delShoot(index):
     global shoots
     canvas.delete(shoots[index][2])
@@ -126,6 +126,12 @@ def update():
             for j in range(-1,len(Mobs)-1):
                 Mobs[j][1][1]+=5
                 canvas.coords(Mobs[j][0],Mobs[j][1][0],Mobs[j][1][1])
+                if randrange(2)==1:
+                    vector = [0,0]
+                    vector[0] = randrange(-5,5)
+                    vector[1] = round(sqrt(100-pow(vector[0],2)))
+                    print(vector)
+                    shoot([Mobs[j][1][0]+15,Mobs[j][1][1]+40],vector)
             Mdir*=-1
         else:
             for j in range(-1,len(Mobs)-1):
@@ -134,21 +140,22 @@ def update():
                 Mobs[j][1][0]+=5*Mdir
                 canvas.coords(Mobs[j][0],Mobs[j][1][0],Mobs[j][1][1])
     if step%10 == 0 :
-        shoot(Ppos)
+        shoot([Ppos[0]+15,Ppos[1]-10])
     i = 0
     for s in shoots:
-        shoots[i][1]-=10
-        canvas.coords(shoots[i][2],shoots[i][0],shoots[i][1])
+        shoots[i][0][0]+=shoots[i][1][0]
+        shoots[i][0][1]+=shoots[i][1][1]
+        canvas.coords(shoots[i][2],shoots[i][0][0],shoots[i][0][1])
         for j in range(-1,len(Mobs)-1):
             if j==-1:
                 j=len(Mobs)-1
 
-            if shoots[i][1] >= Mobs[j][1][1] and shoots[i][1] <= Mobs[j][1][1]+40:
-                if shoots[i][0] <= Mobs[j][1][0]+40 and shoots[i][0]+10 >= Mobs[j][1][0]:
+            if shoots[i][0][1] >= Mobs[j][1][1] and shoots[i][0][1] <= Mobs[j][1][1]+40:
+                if shoots[i][0][0] <= Mobs[j][1][0]+40 and shoots[i][0][0]+10 >= Mobs[j][1][0]:
                     canvas.delete(Mobs[j][0])
                     del Mobs[j]
                     delShoot(i)
-        if shoots[i][1]<0:
+        if shoots[i][0][1]<0:
             delShoot(i)
 
         i+=1
