@@ -1,6 +1,8 @@
 from tkinter import *
 import sys
 import os
+from random import *
+from math import *
 
 def start():
     global iMobs
@@ -30,8 +32,11 @@ def init(width , height , title):
     global iMobs
     global step
     global shootImage
-    global shoots
-    shoots = []
+    global Mshoots
+    global Pshoots
+    Mshoots = [[[800,100],[0,0],1]]
+    Pshoots = []
+
     step =0
     Mobs = []
     iMobs =[]
@@ -81,7 +86,7 @@ def Pmove(x,y):
 def keypressed(arg):
 	global r
 	global l
-	
+
 	if arg.keysym == 'Left':
 		l = 1
 	elif arg.keysym == 'Right':
@@ -90,22 +95,31 @@ def keypressed(arg):
 def keyreleased(arg):
 	global r
 	global l
-	
+
 	if arg.keysym == 'Left':
 		l = 0
 	elif arg.keysym == 'Right':
 		r = 0
 
-def shoot(Ppos):
-    x=Ppos[0]+15
-    y=Ppos[1]-10
-    s = canvas.create_image(x,y,image=shootImage, anchor = "nw")
-    global shoots
-    shoots.append([x,y,s])
-def delShoot(index):
-    global shoots
-    canvas.delete(shoots[index][2])
-    del shoots[index]
+def Pshoot(pos ,vector = [0,-10]):
+    s = canvas.create_image(pos[0],pos[1],image=shootImage, anchor = "nw")
+    global Pshoots
+    Pshoots.append([[pos[0],pos[1]],vector,s])
+
+def Mshoot(pos ,vector = [0,10]):
+    s = canvas.create_image(pos[0],pos[1],image=shootImage, anchor = "nw")
+    global Mshoots
+    Mshoots.append([[pos[0],pos[1]],vector,s])
+
+def delMshoot(index):
+    global Mshoots
+    canvas.delete(Mshoots[index][2])
+    del Mshoots[index]
+
+def delPshoot(index):
+    global Pshoots
+    canvas.delete(Pshoots[index][2])
+    del Pshoots[index]
 
 
 
@@ -117,39 +131,55 @@ def update():
     global ri
     global le
     global step
-    global shoots
+    global Mshoots
+    global Pshoots
     global Mdir
     global phase
     if step%50 == 0:
         phase+=1
-        if phase%9 == 0:
-            for j in range(-1,len(Mobs)-1):
+        for j in range(-1,len(Mobs)-1):
+            if randrange(10)==1:
+                vector = [0,0]
+                vector[0] = randrange(-5,5)
+                vector[1] = randrange(5,10)
+                print(vector)
+                Mshoot([Mobs[j][1][0]+15,Mobs[j][1][1]+40],vector)
+            if phase%9 == 0:
                 Mobs[j][1][1]+=5
-                canvas.coords(Mobs[j][0],Mobs[j][1][0],Mobs[j][1][1])
-            Mdir*=-1
-        else:
-            for j in range(-1,len(Mobs)-1):
+                Mdir*=-1
+            else:
                 if j==-1:
                     j=len(Mobs)-1
                 Mobs[j][1][0]+=5*Mdir
-                canvas.coords(Mobs[j][0],Mobs[j][1][0],Mobs[j][1][1])
+            canvas.coords(Mobs[j][0],Mobs[j][1][0],Mobs[j][1][1])
     if step%10 == 0 :
-        shoot(Ppos)
+        Pshoot([Ppos[0]+15,Ppos[1]-10])
     i = 0
-    for s in shoots:
-        shoots[i][1]-=10
-        canvas.coords(shoots[i][2],shoots[i][0],shoots[i][1])
+    for s in Mshoots:
+        Mshoots[i][0][0]+=Mshoots[i][1][0]
+        Mshoots[i][0][1]+=Mshoots[i][1][1]
+        print(len(Mshoots))
+        canvas.coords(Mshoots[i][2],Mshoots[i][0][0],Mshoots[i][0][1])
+        if Mshoots[i][0][1]> 800:
+            delMshoot(i)
+        i+=1
+
+    i=0
+    for s in Pshoots:
+        Pshoots[i][0][0]+=Pshoots[i][1][0]
+        Pshoots[i][0][1]+=Pshoots[i][1][1]
+        canvas.coords(Pshoots[i][2],Pshoots[i][0][0],Pshoots[i][0][1])
         for j in range(-1,len(Mobs)-1):
             if j==-1:
                 j=len(Mobs)-1
 
-            if shoots[i][1] >= Mobs[j][1][1] and shoots[i][1] <= Mobs[j][1][1]+40:
-                if shoots[i][0] <= Mobs[j][1][0]+40 and shoots[i][0]+10 >= Mobs[j][1][0]:
+            if Pshoots[i][0][1] >= Mobs[j][1][1] and Pshoots[i][0][1] <= Mobs[j][1][1]+40:
+                if Pshoots[i][0][0] <= Mobs[j][1][0]+40 and Pshoots[i][0][0]+10 >= Mobs[j][1][0]:
                     canvas.delete(Mobs[j][0])
                     del Mobs[j]
-                    delShoot(i)
-        if shoots[i][1]<0:
-            delShoot(i)
+                    delPshoot(i)
+        if Pshoots[i][0][1]<0:
+            delPshoot(i)
 
         i+=1
     if r ==1 :
