@@ -122,23 +122,21 @@ def update():
     global phase
     if step%50 == 0:
         phase+=1
-        if phase%9 == 0:
-            for j in range(-1,len(Mobs)-1):
+        for j in range(-1,len(Mobs)-1):
+            if randrange(2)==-1:
+                vector = [0,0]
+                vector[0] = randrange(-5,5)
+                vector[1] = round(sqrt(100-pow(vector[0],2)))
+                print(vector)
+                shoot([Mobs[j][1][0]+15,Mobs[j][1][1]+40],vector)
+            if phase%9 == 0:
                 Mobs[j][1][1]+=5
-                canvas.coords(Mobs[j][0],Mobs[j][1][0],Mobs[j][1][1])
-                if randrange(2)==1:
-                    vector = [0,0]
-                    vector[0] = randrange(-5,5)
-                    vector[1] = round(sqrt(100-pow(vector[0],2)))
-                    print(vector)
-                    shoot([Mobs[j][1][0]+15,Mobs[j][1][1]+40],vector)
-            Mdir*=-1
-        else:
-            for j in range(-1,len(Mobs)-1):
+                Mdir*=-1
+            else:
                 if j==-1:
                     j=len(Mobs)-1
                 Mobs[j][1][0]+=5*Mdir
-                canvas.coords(Mobs[j][0],Mobs[j][1][0],Mobs[j][1][1])
+            canvas.coords(Mobs[j][0],Mobs[j][1][0],Mobs[j][1][1])
     if step%10 == 0 :
         shoot([Ppos[0]+15,Ppos[1]-10])
     i = 0
