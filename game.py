@@ -34,7 +34,7 @@ def init(width , height , title):
     global shootImage
     global Mshoots
     global Pshoots
-    Mshoots = []
+    Mshoots = [[[800,100],[0,0],1]]
     Pshoots = []
 
     step =0
@@ -101,18 +101,21 @@ def keyreleased(arg):
 	elif arg.keysym == 'Right':
 		r = 0
 
-def Pshoot(pos ,vector = [-10,0]):
+def Pshoot(pos ,vector = [0,-10]):
     s = canvas.create_image(pos[0],pos[1],image=shootImage, anchor = "nw")
     global Pshoots
-    Pshoots.append([[pos[0],pos[1]],[0,-10],s])
-def Mshoot(pos ,vector = [-10,0]):
+    Pshoots.append([[pos[0],pos[1]],vector,s])
+
+def Mshoot(pos ,vector = [0,10]):
     s = canvas.create_image(pos[0],pos[1],image=shootImage, anchor = "nw")
     global Mshoots
-    Mshoots.append([[pos[0],pos[1]],[0,-10],s])
+    Mshoots.append([[pos[0],pos[1]],vector,s])
+
 def delMshoot(index):
     global Mshoots
     canvas.delete(Mshoots[index][2])
     del Mshoots[index]
+
 def delPshoot(index):
     global Pshoots
     canvas.delete(Pshoots[index][2])
@@ -135,10 +138,10 @@ def update():
     if step%50 == 0:
         phase+=1
         for j in range(-1,len(Mobs)-1):
-            if randrange(2)==-1:
+            if randrange(10)==1:
                 vector = [0,0]
                 vector[0] = randrange(-5,5)
-                vector[1] = round(sqrt(100-pow(vector[0],2)))
+                vector[1] = randrange(5,10)
                 print(vector)
                 Mshoot([Mobs[j][1][0]+15,Mobs[j][1][1]+40],vector)
             if phase%9 == 0:
@@ -155,7 +158,13 @@ def update():
     for s in Mshoots:
         Mshoots[i][0][0]+=Mshoots[i][1][0]
         Mshoots[i][0][1]+=Mshoots[i][1][1]
+        print(len(Mshoots))
         canvas.coords(Mshoots[i][2],Mshoots[i][0][0],Mshoots[i][0][1])
+        if Mshoots[i][0][1]> 800:
+            delMshoot(i)
+        i+=1
+
+    i=0
     for s in Pshoots:
         Pshoots[i][0][0]+=Pshoots[i][1][0]
         Pshoots[i][0][1]+=Pshoots[i][1][1]
