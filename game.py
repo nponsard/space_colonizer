@@ -142,7 +142,6 @@ def update():
                 vector = [0,0]
                 vector[0] = randrange(-5,5)
                 vector[1] = randrange(5,10)
-                print(vector)
                 Mshoot([Mobs[j][1][0]+15,Mobs[j][1][1]+40],vector)
             if phase%9 == 0:
                 Mobs[j][1][1]+=5
@@ -158,7 +157,6 @@ def update():
     for s in Mshoots:
         Mshoots[i][0][0]+=Mshoots[i][1][0]
         Mshoots[i][0][1]+=Mshoots[i][1][1]
-        print(len(Mshoots))
         canvas.coords(Mshoots[i][2],Mshoots[i][0][0],Mshoots[i][0][1])
         if Mshoots[i][0][1]> 800:
             delMshoot(i)
