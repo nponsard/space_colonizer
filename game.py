@@ -147,10 +147,11 @@ def update():
         for j in range(-1,len(Mobs)-1):
             if j==-1:
                 j=len(Mobs)-1
-            if randrange(10)==1:
-                vector = [0,0]
-                vector[0] = randrange(-5,5)
-                vector[1] = randrange(5,10)
+            if randrange(0,5+int(len(Mobs)/9))==2:
+                v= 13-int(len(Mobs)/10)
+                vector = [0,randrange(3,v)]
+                #vector[0] = randrange(-5,5)
+                #vector[1] = randrange(5,10)
                 Mshoot([Mobs[j][1][0]+15,Mobs[j][1][1]+40],vector)
             if phase%9 == 0:
                 Mobs[j][1][1]+=5
