@@ -34,6 +34,7 @@ def init(width , height , title):
     global shootImage
     global Mshoots
     global Pshoots
+    global MshootImage
     Mshoots = [[[800,100],[0,0],1]]
     Pshoots = []
 
@@ -47,6 +48,7 @@ def init(width , height , title):
     canvas= Canvas(window,width=width,height=height,bg="black")
     canvas.grid(column=0,row=0)
     shootImage = PhotoImage(file = os.path.join("imgs","s.png"))
+    MshootImage = PhotoImage(file = os.path.join("imgs","Ms.png"))
     window.bind_all("<KeyPress>", keypressed)
     window.bind_all("<KeyRelease>", keyreleased)
 
@@ -107,7 +109,7 @@ def Pshoot(pos ,vector = [0,-10]):
     Pshoots.append([[pos[0],pos[1]],vector,s])
 
 def Mshoot(pos ,vector = [0,10]):
-    s = canvas.create_image(pos[0],pos[1],image=shootImage, anchor = "nw")
+    s = canvas.create_image(pos[0],pos[1],image=MshootImage, anchor = "nw")
     global Mshoots
     Mshoots.append([[pos[0],pos[1]],vector,s])
 
