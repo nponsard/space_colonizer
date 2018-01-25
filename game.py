@@ -139,7 +139,12 @@ def update():
     global phase
     if step%50 == 0:
         phase+=1
+        if phase%9 == 0:
+            Mdir*=-1
+
         for j in range(-1,len(Mobs)-1):
+            if j==-1:
+                j=len(Mobs)-1
             if randrange(10)==1:
                 vector = [0,0]
                 vector[0] = randrange(-5,5)
@@ -147,10 +152,7 @@ def update():
                 Mshoot([Mobs[j][1][0]+15,Mobs[j][1][1]+40],vector)
             if phase%9 == 0:
                 Mobs[j][1][1]+=5
-                Mdir*=-1
             else:
-                if j==-1:
-                    j=len(Mobs)-1
                 Mobs[j][1][0]+=5*Mdir
             canvas.coords(Mobs[j][0],Mobs[j][1][0],Mobs[j][1][1])
     if step%10 == 0 :
