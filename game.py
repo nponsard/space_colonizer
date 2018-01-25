@@ -35,6 +35,8 @@ def init(width , height , title):
     global Mshoots
     global Pshoots
     global MshootImage
+    global Plife
+    Plife = 3
     Mshoots = [[[800,100],[0,0],1]]
     Pshoots = []
 
@@ -49,6 +51,7 @@ def init(width , height , title):
     canvas.grid(column=0,row=0)
     shootImage = PhotoImage(file = os.path.join("imgs","s.png"))
     MshootImage = PhotoImage(file = os.path.join("imgs","Ms.png"))
+    HeartImage = PhotoImage(file = os.path.join("imgs","h.png"))
     window.bind_all("<KeyPress>", keypressed)
     window.bind_all("<KeyRelease>", keyreleased)
 
@@ -65,12 +68,15 @@ def create_player(x,y,image,movments="xy", physics=0):
     global Pspeed
     global ri
     global le
+    global lives
+
     ri = 0
     le = 0
     l =0
     r=0
     Pspeed = 0
     player = canvas.create_image(x,y,image=image, anchor = "nw")
+
     if players >0 :
         sys.exit("one player supported at this moment !")
     print("creating player")
@@ -80,9 +86,12 @@ def create_player(x,y,image,movments="xy", physics=0):
 
 def Pmove(x,y):
     global Ppos
+    global Plife
     if x<760 and x>0:
         Ppos = [x,y]
         canvas.coords(player,Ppos[0],Ppos[1])
+        for hx in range(Plife):
+            pass
 
 
 def keypressed(arg):
@@ -123,6 +132,12 @@ def delPshoot(index):
     canvas.delete(Pshoots[index][2])
     del Pshoots[index]
 
+def life(qtty):
+    global Plife
+    Plife+=qtty
+
+
+
 
 
 def update():
@@ -137,6 +152,8 @@ def update():
     global Pshoots
     global Mdir
     global phase
+    if len(Mobs)==0 :
+        sys.exit("you win !")
     if step%50 == 0:
         phase+=1
         if phase%9 == 0:
@@ -145,10 +162,11 @@ def update():
         for j in range(-1,len(Mobs)-1):
             if j==-1:
                 j=len(Mobs)-1
-            if randrange(10)==1:
-                vector = [0,0]
-                vector[0] = randrange(-5,5)
-                vector[1] = randrange(5,10)
+            if randrange(0,5+int(len(Mobs)/9))==2:
+                v= 13-int(len(Mobs)/10)
+                vector = [0,randrange(3,v)]
+                #vector[0] = randrange(-5,5)
+                #vector[1] = randrange(5,10)
                 Mshoot([Mobs[j][1][0]+15,Mobs[j][1][1]+40],vector)
             if phase%9 == 0:
                 Mobs[j][1][1]+=5
@@ -162,6 +180,10 @@ def update():
         Mshoots[i][0][0]+=Mshoots[i][1][0]
         Mshoots[i][0][1]+=Mshoots[i][1][1]
         canvas.coords(Mshoots[i][2],Mshoots[i][0][0],Mshoots[i][0][1])
+        if Mshoots[i][0][1]> Ppos[1] and Mshoots[i][0][1]<Ppos[1]+40 :
+            if Mshoots[i][0][0]> Ppos[0] and Mshoots[i][0][0]<Ppos[0]+40 :
+                life(-1)
+
         if Mshoots[i][0][1]> 800:
             delMshoot(i)
         i+=1
