@@ -137,6 +137,8 @@ def update():
     global Pshoots
     global Mdir
     global phase
+    if len(Mobs)==0 :
+        sys.exit("you win !")
     if step%50 == 0:
         phase+=1
         if phase%9 == 0:
@@ -162,6 +164,9 @@ def update():
         Mshoots[i][0][0]+=Mshoots[i][1][0]
         Mshoots[i][0][1]+=Mshoots[i][1][1]
         canvas.coords(Mshoots[i][2],Mshoots[i][0][0],Mshoots[i][0][1])
+        if Mshoots[i][0][1]> Ppos[1] and Mshoots[i][0][1]<Ppos[1]+40 :
+            if Mshoots[i][0][0]> Ppos[0] and Mshoots[i][0][0]<Ppos[0]+40 :
+                sys.exit("you loose !")
         if Mshoots[i][0][1]> 800:
             delMshoot(i)
         i+=1
