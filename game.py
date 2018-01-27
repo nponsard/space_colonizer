@@ -9,6 +9,8 @@ def start():
     global Mobs
     global Mdir
     global phase
+
+
     phase = 0
     Mdir = 1
     x=2
@@ -35,6 +37,7 @@ def init(width , height , title):
     global Mshoots
     global Pshoots
     global MshootImage
+    global heart
     Mshoots = [[[800,100],[0,0],1]]
     Pshoots = []
 
@@ -49,13 +52,14 @@ def init(width , height , title):
     canvas.grid(column=0,row=0)
     shootImage = PhotoImage(file = os.path.join("imgs","s.png"))
     MshootImage = PhotoImage(file = os.path.join("imgs","Ms.png"))
+    heart = PhotoImage(file = os.path.join("imgs","h.png"))
     window.bind_all("<KeyPress>", keypressed)
     window.bind_all("<KeyRelease>", keyreleased)
 
 def create_Mob(image, spawnRate = 1):
     iMobs.append([image, spawnRate])
 
-def create_player(x,y,image,movments="xy", physics=0):
+def create_player(x,y,movments="xy", physics=0):
     global players
     global Ppos
     global player
@@ -65,43 +69,68 @@ def create_player(x,y,image,movments="xy", physics=0):
     global Pspeed
     global ri
     global le
+    global Pr
+    global Pl
+    global image
     ri = 0
     le = 0
     l =0
     r=0
     Pspeed = 0
+    image = PhotoImage(file = os.path.join("imgs","p.png"))
+    Pr = PhotoImage(file = os.path.join("imgs","pr.png"))
+    Pl = PhotoImage(file = os.path.join("imgs","pl.png"))
     player = canvas.create_image(x,y,image=image, anchor = "nw")
     if players >0 :
         sys.exit("one player supported at this moment !")
-    print("creating player")
     players +=1
     Pmovments = movments
     Ppos = [x,y]
+    global lives
+    global life
+    life = 3
+    lives = []
+    hx =44
+    global heart
+    for i in range(life):
+        lives.append(canvas.create_image(x+hx,y,image=heart, anchor = "nw"))
+        hx+=10
 
 def Pmove(x,y):
     global Ppos
     if x<760 and x>0:
         Ppos = [x,y]
         canvas.coords(player,Ppos[0],Ppos[1])
+    hx=44
+    for h in lives:
+        canvas.coords(h,hx+x,y)
+        hx+=10
 
 
 def keypressed(arg):
-	global r
-	global l
-
-	if arg.keysym == 'Left':
-		l = 1
-	elif arg.keysym == 'Right':
-		r = 1
+    global r
+    global player
+    global l
+    if arg.keysym == 'Left':
+        l = 1
+        global Pl
+        canvas.itemconfig(player,image = Pl )
+    elif arg.keysym == 'Right':
+        global Pr
+        r = 1
+        canvas.itemconfig(player,image = Pr )
 
 def keyreleased(arg):
-	global r
-	global l
+    global r
+    global l
+    global image
+    global player
+    canvas.itemconfig(player,image = image)
 
-	if arg.keysym == 'Left':
-		l = 0
-	elif arg.keysym == 'Right':
-		r = 0
+    if arg.keysym == 'Left':
+        l = 0
+    elif arg.keysym == 'Right':
+        r = 0
 
 def Pshoot(pos ,vector = [0,-10]):
     s = canvas.create_image(pos[0],pos[1],image=shootImage, anchor = "nw")
@@ -122,6 +151,19 @@ def delPshoot(index):
     global Pshoots
     canvas.delete(Pshoots[index][2])
     del Pshoots[index]
+
+def lifeAdd(value):
+    global lives
+    global life
+    life+=value
+    if life<1:
+        sys.exit("you loose !")
+    i=1
+    if value<0 :
+        for h in lives:
+            if i>life:
+                canvas.delete(h)
+            i+=1
 
 
 
@@ -167,7 +209,8 @@ def update():
         canvas.coords(Mshoots[i][2],Mshoots[i][0][0],Mshoots[i][0][1])
         if Mshoots[i][0][1]> Ppos[1] and Mshoots[i][0][1]<Ppos[1]+40 :
             if Mshoots[i][0][0]> Ppos[0] and Mshoots[i][0][0]<Ppos[0]+40 :
-                sys.exit("you loose !")
+                lifeAdd(-1)
+                delMshoot(i)
         if Mshoots[i][0][1]> 800:
             delMshoot(i)
         i+=1
@@ -205,8 +248,8 @@ def update():
             le -=2
     Pspeed = ri-le
     Pmove(Ppos[0]+Pspeed,Ppos[1])
-    window.after(16,update)
     step +=1
+    window.after(16,update)
 
 
 
